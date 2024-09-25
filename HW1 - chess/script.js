@@ -76,7 +76,12 @@ function UpdateMatrix(position, piece) {
             let mCells = CheckBeating(posMap[0], posMap[1], posMap[2], posMap[3], pName);
             //console.log(mCells);
             if (mCells !== undefined) {
+                console.log('------')
+                console.log(mCells)
                 mCells.forEach(cell => {
+                    console.log(cell)
+                    console.log(matrix)
+                    console.log(matrix[cell[1]][cell[0]])
                     matrix[cell[1]][cell[0]] = '·';
                 })
             }
@@ -201,14 +206,18 @@ function CheckBeating(k, l, m, n, piece) {
                         if (checkIteration === 0) {
                             k += 1
                             l += 1
-                        } else if (checkIteration === 1) {
-                            k -= 1
-                            l += 1
                         } else if (checkIteration === 2) {
                             k += 1
                             l -= 1
+                        } else if (checkIteration === 1) {
+                            k -= 1
+                            l += 1
                         }
-
+                        dif = Math.abs(k - m) - Math.abs(l - n)
+                        if (dif === 0){
+                            console.log([k, l])
+                            mergeCellArray = [[k, l]];
+                        }
 
                         if (l > 8) {
                             checkIteration++;
@@ -221,10 +230,7 @@ function CheckBeating(k, l, m, n, piece) {
                             l = permanentl;
                             dif = 1;
                         }
-                        dif = Math.abs(k - m) - Math.abs(l - n)
-                        if (dif === 0){
-                            mergeCellArray.push([k, l]);
-                        }
+
                         console.log('CI: ' + checkIteration)
                         console.log([k, l])
                     }
@@ -246,7 +252,7 @@ function CheckBeating(k, l, m, n, piece) {
 
                         dif = Math.abs(k - m) - Math.abs(l - n)
                         if (dif === 0){
-                            mergeCellArray.push([k, l]);
+                            mergeCellArray = [[k, l]];
                         }
                         if (l < 1) {
                             checkIteration++;
