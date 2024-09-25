@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./script.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+
+<form class="sel">
+    <label for="r"><input type="radio" id="R" name="figures"> Rook</label>
+    <label for="b"><input type="radio" id="B" name="figures"> Bishop</label>
+    <label for="q"><input type="radio" id="Q" name="figures"> Queen</label>
+    |
+    <label for="p"><input type="radio" id="P" name="figures" checked> Pawn</label>
+</form>
+
+<div id="board"></div>
+
+<div class="output">
+    <div id="targetbox"></div>
+    <div id="pawnbox"></div>
+</div>
+<div id="result"></div>
+</body>
+</html>
