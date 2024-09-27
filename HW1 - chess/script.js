@@ -76,12 +76,7 @@ function UpdateMatrix(position, piece) {
             let mCells = CheckBeating(posMap[0], posMap[1], posMap[2], posMap[3], pName);
             //console.log(mCells);
             if (mCells !== undefined) {
-                console.log('------')
-                console.log(mCells)
                 mCells.forEach(cell => {
-                    console.log(cell)
-                    console.log(matrix)
-                    console.log(matrix[cell[1]][cell[0]])
                     matrix[cell[1]][cell[0]] = '·';
                 })
             }
@@ -193,84 +188,56 @@ function CheckBeating(k, l, m, n, piece) {
         if (dif === 0) {
             result.textContent = `Bishop can beat the Pawn for 1 step`;
         } else {
-            let mergeCellArray = []
-            const permanentk = k;
-            const permanentl = l;
             if ((k + l) % 2 === (m + n) % 2) {
-                let distX = k - m;
-                let distY = l - n;
-                let max = Math.abs(distX) > Math.abs(distY) ? distX : distY;
-                if (max < 0) {
-                    let checkIteration = 0;
-                    while (dif !== 0) {
-                        if (checkIteration === 0) {
-                            k += 1
-                            l += 1
-                        } else if (checkIteration === 2) {
-                            k += 1
-                            l -= 1
-                        } else if (checkIteration === 1) {
-                            k -= 1
-                            l += 1
-                        }
-                        dif = Math.abs(k - m) - Math.abs(l - n)
-                        if (dif === 0){
-                            console.log([k, l])
-                            mergeCellArray = [[k, l]];
-                        }
+                let mergeCellArray = [];
+                // const permanentk = k;
+                // const permanentl = l;
+                let mergeKmain = m - n;
+                let mergeLmain = 0;
+                while (mergeKmain < 0) {
+                    mergeKmain++;
+                    mergeLmain++;
+                }
+                let mergeKside = 0;
+                let mergeLside = n + m;
+                while (mergeLside > 9) {
+                    mergeKside++;
+                    mergeLside--;
+                }
+                console.log([mergeKmain, mergeLmain]);
 
-                        if (l > 8) {
-                            checkIteration++;
-                            k = permanentk;
-                            l = permanentl;
-                            dif = 1;
-                        } else if (k > 8) {
-                            checkIteration++;
-                            k = permanentk;
-                            l = permanentl;
-                            dif = 1;
-                        }
+                while (dif !== 0) {
+                    console.log([mergeKmain, mergeLmain]);
 
-                        console.log('CI: ' + checkIteration)
-                        console.log([k, l])
+                    mergeKmain++;
+                    mergeLmain++;
+                    if (mergeKmain > 8 || mergeLmain > 8) {
+                        break;
                     }
-                } else {
-                    console.log(max)
-
-                    let checkIteration = 0;
-                    while (dif !== 0) {
-                        if (checkIteration === 0) {
-                            k -= 1
-                            l -= 1
-                        } else if (checkIteration === 1) {
-                            k -= 1
-                            l += 1
-                        } else if (checkIteration === 2) {
-                            k += 1
-                            l -= 1
-                        }
-
-                        dif = Math.abs(k - m) - Math.abs(l - n)
-                        if (dif === 0){
-                            mergeCellArray = [[k, l]];
-                        }
-                        if (l < 1) {
-                            checkIteration++;
-                            k = permanentk;
-                            l = permanentl;
-                            dif = 1;
-                        } else if (k < 1) {
-                            checkIteration++;
-                            k = permanentk;
-                            l = permanentl;
-                            dif = 1;
-                        }
-                        console.log('CI: ' + checkIteration)
-                        console.log([k, l])
+                    dif = Math.abs(k - mergeKmain) - Math.abs(l - mergeLmain);
+                }
+                if (dif === 0) {
+                    mergeCellArray.push([mergeKmain, mergeLmain])
+                }
+                dif = 1;
+                console.log('----------')
+                while (dif !== 0) {
+                    mergeKside++;
+                    mergeLside--;
+                    if (mergeKside > 8 || mergeLside < 1) {
+                        break;
                     }
+                    dif = Math.abs(k - mergeKside) - Math.abs(l - mergeLside);
+
                 }
 
-                result.textContent = `Bishop can beat the Pawn for 2 step through (${k}, ${l})`;
+                if ([mergeKside, mergeLside] !== [mergeKmain, mergeLmain] && dif === 0) {
+                    mergeCellArray.push([mergeKside, mergeLside])
+                }
+
+                result.textContent = `Bishop can beat the Pawn for 2 step through:`;
+                mergeCellArray.forEach(cell => result.textContent += ` (${cell}),`);
+                result.textContent = result.textContent.slice(0, -1);
 
                 return mergeCellArray;
             } else {
@@ -282,10 +249,62 @@ function CheckBeating(k, l, m, n, piece) {
         if (k === m || l === n || dif === 0) {
             result.textContent = `Queen can beat the Pawn for 1 step`;
         } else {
+            let mergeCellArray = [];
             let mergeCell1 = [k, n];
             let mergeCell2 = [m, l];
-            result.textContent = `Queen can beat the Pawn for 2 step through (${mergeCell1[0]}, ${mergeCell1[1]}) or (${mergeCell2[0]}, ${mergeCell2[1]})`;
-            return [mergeCell1, mergeCell2];
+            mergeCellArray.push(mergeCell1);
+            mergeCellArray.push(mergeCell2);
+            if ((k + l) % 2 === (m + n) % 2) {
+
+                // const permanentk = k;
+                // const permanentl = l;
+                let mergeKmain = m - n;
+                let mergeLmain = 0;
+                while (mergeKmain < 0) {
+                    mergeKmain++;
+                    mergeLmain++;
+                }
+                let mergeKside = 0;
+                let mergeLside = n + m;
+                while (mergeLside > 9) {
+                    mergeKside++;
+                    mergeLside--;
+                }
+                console.log([mergeKmain, mergeLmain]);
+
+                while (dif !== 0) {
+                    console.log([mergeKmain, mergeLmain]);
+
+                    mergeKmain++;
+                    mergeLmain++;
+                    if (mergeKmain > 8 || mergeLmain > 8) {
+                        break;
+                    }
+                    dif = Math.abs(k - mergeKmain) - Math.abs(l - mergeLmain);
+                }
+                if (dif === 0) {
+                    mergeCellArray.push([mergeKmain, mergeLmain])
+                }
+                dif = 1;
+                console.log('----------')
+                while (dif !== 0) {
+                    mergeKside++;
+                    mergeLside--;
+                    if (mergeKside > 8 || mergeLside < 1) {
+                        break;
+                    }
+                    dif = Math.abs(k - mergeKside) - Math.abs(l - mergeLside);
+
+                }
+
+                if ([mergeKside, mergeLside] !== [mergeKmain, mergeLmain] && dif === 0) {
+                    mergeCellArray.push([mergeKside, mergeLside])
+                }
+            }
+            result.textContent = `Queen can beat the Pawn for 2 step through:`;
+            mergeCellArray.forEach(cell => result.textContent += ` (${cell}),`);
+            result.textContent = result.textContent.slice(0, -1);
+            return mergeCellArray;
         }
     }
 }
