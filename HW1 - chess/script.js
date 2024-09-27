@@ -245,69 +245,106 @@ function CheckBeating(k, l, m, n, piece) {
             }
         }
     } else if (piece === 'Q') {
+        console.time('algorithm');
         let dif = Math.abs(k - m) - Math.abs(l - n)
+
+
         if (k === m || l === n || dif === 0) {
             result.textContent = `Queen can beat the Pawn for 1 step`;
         } else {
             let mergeCellArray = [];
+
+            // for (let x = 1; x < 9; x++) {
+            //     for (let y = 1; y < 9; y++) {
+            //         // if (x === k && y === n ||x === m && y === l ) {
+            //         //     mergeCellArray.push([x, y]);
+            //         // }
+            //         let difQ = Math.abs(x - k) - Math.abs(y - l)
+            //         let difP = Math.abs(x - m) - Math.abs(y - n)
+            //
+            //         if ((k + l) % 2 === (m + n) % 2) {
+            //             if (difQ === difP) {
+            //                 mergeCellArray.push([x, y]);
+            //
+            //             }
+            //         }
+            //
+            //
+            //         if (difQ === 0 && x === m || difQ === 0 && y === n) {
+            //             mergeCellArray.push([x, y]);
+            //         }
+            //         if (difP === 0 && x === k || difP === 0 && y === l) {
+            //             mergeCellArray.push([x, y]);
+            //         }
+            //     }
+            // }
+
             let mergeCell1 = [k, n];
             let mergeCell2 = [m, l];
             mergeCellArray.push(mergeCell1);
             mergeCellArray.push(mergeCell2);
-            if ((k + l) % 2 === (m + n) % 2) {
-
-                // const permanentk = k;
-                // const permanentl = l;
-                let mergeKmain = m - n;
-                let mergeLmain = 0;
-                while (mergeKmain < 0) {
-                    mergeKmain++;
-                    mergeLmain++;
-                }
-                let mergeKside = 0;
-                let mergeLside = n + m;
-                while (mergeLside > 9) {
-                    mergeKside++;
-                    mergeLside--;
-                }
-                console.log([mergeKmain, mergeLmain]);
-
-                while (dif !== 0) {
-                    console.log([mergeKmain, mergeLmain]);
-
-                    mergeKmain++;
-                    mergeLmain++;
-                    if (mergeKmain > 8 || mergeLmain > 8) {
-                        break;
-                    }
-                    dif = Math.abs(k - mergeKmain) - Math.abs(l - mergeLmain);
-                }
-                if (dif === 0) {
-                    mergeCellArray.push([mergeKmain, mergeLmain])
-                }
-                dif = 1;
-                console.log('----------')
-                while (dif !== 0) {
-                    mergeKside++;
-                    mergeLside--;
-                    if (mergeKside > 8 || mergeLside < 1) {
-                        break;
-                    }
-                    dif = Math.abs(k - mergeKside) - Math.abs(l - mergeLside);
-
-                }
-
-                if ([mergeKside, mergeLside] !== [mergeKmain, mergeLmain] && dif === 0) {
-                    mergeCellArray.push([mergeKside, mergeLside])
-                }
-            }
+            let temp = [checkDiagonalForQueen(k, l, m, n, 'main'), checkDiagonalForQueen(k, l, m, n, 'secondary'), checkDiagonalForQueen(m, n, k, l, 'main'), checkDiagonalForQueen(m, n, k, l, 'secondary')];
+            temp.forEach((pair) => {
+                pair.forEach(coord => {
+                    mergeCellArray.push(coord)
+                })
+            })
             result.textContent = `Queen can beat the Pawn for 2 step through:`;
             mergeCellArray.forEach(cell => result.textContent += ` (${cell}),`);
             result.textContent = result.textContent.slice(0, -1);
+
+            console.timeEnd('algorithm');
             return mergeCellArray;
         }
     }
+
 }
+
+function checkDiagonalForQueen(self_x, self_y, target_x, target_y, iteration) {
+    let mergeX;
+    let mergeY;
+    const tempCellArray = [];
+    if (iteration === 'main') {
+        mergeX = self_x - self_y;
+        mergeY = 0;
+        while (mergeX < 0) {
+            mergeX++;
+            mergeY++;
+        }
+    } else if (iteration === 'secondary') {
+        mergeX = 0;
+        mergeY = self_y + self_x;
+        while (mergeY > 9) {
+            mergeX++;
+            mergeY--;
+        }
+    }
+
+    while (true) {
+        if (iteration === 'main') {
+            mergeX++;
+            mergeY++;
+        } else if (iteration === 'secondary') {
+            mergeX++;
+            mergeY--;
+        }
+
+        if (mergeX > 8 || mergeY < 1 || mergeY > 8) {
+            break;
+        }
+        dif = Math.abs(target_x - mergeX) - Math.abs(target_y - mergeY);
+
+        if (mergeX === target_x) {
+            tempCellArray.push([mergeX, mergeY])
+        } else if (mergeY === target_y) {
+            tempCellArray.push([mergeX, mergeY])
+        } else if (dif === 0) {
+            tempCellArray.push([mergeX, mergeY])
+        }
+    }
+    return tempCellArray;
+}
+
 
 document.addEventListener('click', function(event) {
     if (event.target.tagName === 'BUTTON') {
